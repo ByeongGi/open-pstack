@@ -3,6 +3,10 @@
 Open Pstack lands on green: Mergify merges a ready PR to main once verify and exact-head live-gate pass and no review thread is unresolved, and a workflow resolves Unfret's own threads. A PR that touches `.github/` or the Mergify config also waits for Unfret, and workflow changes require operator queueing.
 This port applies the Cursor → Claude Code substitutions in skill bodies. Earlier drafts left them flagged; this revision resolves them. A later pass added a Codex build that shares the same skills; see [Codex port](#codex-port) below.
 
+## 1.22.0 syncs to Cursor pstack 0.15.42
+
+Open Pstack 1.22.0 tracks Cursor pstack 0.15.42 at `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7`. `/why` and `/how` are the short upstream skills. `/why` answers from commits and PR discussions. `/how` is one read-only subagent. Recall sweeps the shared record with its own investigators. Blast radius, sharpen, reflect, and the statechart sources take that commit's prose and fixes. Default roles and panels stay the port's. Cursor's Opus 5.5, Fable 5.2, and Gemini 4 Carbon defaults are not copied. `how explorer`, `how explainer`, and `why investigators` leave the catalog. `/sync-cursor-pstack` fetches later Cursor pstack commits and applies the mechanical merge. It stops on a port-diverged file instead of overwriting it.
+
 ## 1.21.0 adds Grok as a parent harness
 
 Open Pstack 1.21.0 keeps the Cursor pstack 0.15.36 sync. Default roles and panels are unchanged.

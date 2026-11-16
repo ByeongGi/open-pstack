@@ -249,9 +249,6 @@ perf-issue: codex:gpt-6.1-sol@max
 hillclimb: codex:gpt-6.1-sol@max
 judgment and prose: claude:opus@max
 hardest tasks: claude:opus@max
-how explorer: grok:grok-4.7@xhigh
-how explainer: claude:opus@max
-why investigators, synthesizer: inherit-parent
 reflect tooling, judgment, divergent, synthesizer: inherit-parent
 arena runners: claude:opus@max, codex:gpt-6.1-sol@max, grok:grok-4.7@xhigh
 arena cross-judge pool: claude:opus@max, codex:gpt-6.1-sol@max, grok:grok-4.7@xhigh

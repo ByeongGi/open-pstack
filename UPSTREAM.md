@@ -8,11 +8,11 @@ open-pstack tracks [Cursor's pstack](https://github.com/cursor/plugins/tree/main
 | --- | --- |
 | Repository | `https://github.com/cursor/plugins.git` |
 | Path | `pstack/` |
-| Commit | `2776ddd2355d6d6c8747d3964600f28daf62f049` |
-| Upstream version | `0.15.36` |
-| open-pstack version | `1.21.0` |
+| Commit | `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7` |
+| Upstream version | `0.15.42` |
+| open-pstack version | `1.22.0` |
 
-The table above is the current Cursor sync point. Open Pstack 1.17.0 imported this 0.15.36 sync, and 1.18.0 to 1.21.0 keep it. `README-UPSTREAM.md` preserves the upstream pstack README verbatim. `CHANGES.md` and `NOTICE.md` describe the adaptations and provenance.
+The table above is the current Cursor sync point. Open Pstack 1.17.0 imported the 0.15.36 sync, 1.18.0 to 1.21.0 kept it, and 1.22.0 imports this 0.15.42 sync. `README-UPSTREAM.md` preserves the upstream pstack README verbatim. `CHANGES.md` and `NOTICE.md` describe the adaptations and provenance.
 
 ## Upstream-only exclusions
 
@@ -44,6 +44,7 @@ The table above is the current Cursor sync point. Open Pstack 1.17.0 imported th
 - `ab1f702`'s fallback chains for a rejected model slug are not applied: the rule in poteto-mode's Match the model to the job that walks the calling skill's fallback and then the closest valid slug or the parent model, Arena step 3's family defaults and closest-slug rule, Swarm step 3's default and closest-slug rule, and the arena judge's same-model closest slug and default-pool retry. Neither is Arena step 3's rule that refills dropped runner seats on a remaining runner's model or the parent model. Each conflicts with the named-dropout rule in `provider-dispatch.md`. The arena judge keeps upstream's rule that it is never from the parent's provider, and when no configured entry runs, Arena skips the judge and says so.
 - `c742dd6`'s Orchestrate takes these mappings: `Task` workers go through provider dispatch, cloud VMs become dedicated local worktrees, the Project tracker and Project store become `<config-home>/orchestrate/<project-slug>/notes.md`, PR and CI event subscriptions become `watch-pr` waits, and forking a worker becomes reusing its worktree. "Call no scripts" means no orchestration-store scripts; the provider launcher and `watch-pr` stay. Its retry on a different model after a tool error is not applied: that failure is a named dropout, and a worker is replaced only on affirmative failure evidence. `3c596e7`'s `orch` change is superseded by the deletion of `scripts/orch/`.
 - Upstream's 0.15.30 to 0.15.36 manifest bumps in `pstack/plugin.json` and `pstack/.cursor-plugin/plugin.json` from `eb4db2b`, `642289e`, `b1a1298`, `7c7bde7`, `164ced1`, `ab1f702` and `c742dd6`, and the guide edits in `eb4db2b`, `3c0fdb4`, `34b1b7c`, `ab1f702` and `c742dd6`, are not applied, as for the earlier bumps and guide edits above. So are the matching updates to upstream's generated `harness/pstack/claude-code/` tree.
+- `bf0c7cd` (pstack 0.15.42) is applied for skill prose: one-file `why` and `how`, recall's own source investigators, blast-radius, sharpen, reflect's example, and the statechart source fixes. Its `disable-model-invocation: true` lines on `why` and `how` are not applied, as for `73f8be4`. Its Cursor model defaults (`claude-opus-5-5-*`, `claude-fable-5-2-*`, `gemini-4-carbon-high`) are not applied. The port keeps its role catalog, and `how explorer`, `how explainer`, and `why investigators, synthesizer` leave it because those roles are gone. Reflect stays on `inherit-parent`. `statechart/scripts/test/`, including the added `drawn.ts`, stays out. Cursor manifests, the guide, Benny, and `make-bot-ui` stay out.
 
 ## Local port-patch ledger
 
@@ -81,12 +82,14 @@ The repository already names Cursor's repository as the `cursor` remote in the m
 git remote add cursor https://github.com/cursor/plugins.git
 ```
 
+`/sync-cursor-pstack` fetches `cursor/main` and applies the mechanical merge. It leaves review rows and the sync row in the table above to the hand pass below.
+
 Fetch and inspect only commits that touched pstack after the recorded sync point:
 
 ```shell
 git fetch cursor main
-git log --oneline 2776ddd2355d6d6c8747d3964600f28daf62f049..cursor/main -- pstack
-git diff --stat 2776ddd2355d6d6c8747d3964600f28daf62f049..cursor/main -- pstack
+git log --oneline bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7..cursor/main -- pstack
+git diff --stat bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7..cursor/main -- pstack
 ```
 
 No output means the tracked pstack tree has not changed. This comparison does not need a polling service or generated mirror branch.

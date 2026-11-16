@@ -103,7 +103,7 @@ pstack-runner \
   [--timeout <seconds>]
 ```
 
-Pass arguments as an argv array or quote every path. Never interpolate prompt text into a shell command. The launcher preflights the assigned CLI and authentication, invokes the model exactly once, disables recursive agents and ambient skill dispatch where the CLI supports it, restricts the built-in tool surface, and records the exact provider/model/effort flags. Each lane's preflight and model call receive the child environment in its provider's [notes](model-catalog.md#provider-notes), without the parent harness's identity markers. External lanes do not receive the parent's MCP surface. Keep MCP-dependent Why and Reflect roles on `inherit-parent` or `auto`. The launcher never falls back.
+Pass arguments as an argv array or quote every path. Never interpolate prompt text into a shell command. The launcher preflights the assigned CLI and authentication, invokes the model exactly once, disables recursive agents and ambient skill dispatch where the CLI supports it, restricts the built-in tool surface, and records the exact provider/model/effort flags. Each lane's preflight and model call receive the child environment in its provider's [notes](model-catalog.md#provider-notes), without the parent harness's identity markers. External lanes do not receive the parent's MCP surface. Keep MCP-dependent Reflect roles on `inherit-parent` or `auto`. The launcher never falls back.
 
 Provider-specific preflight details, state paths, and host prerequisites are in the provider notes.
 

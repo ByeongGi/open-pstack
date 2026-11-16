@@ -63,7 +63,7 @@ for (const harness of ['claude', 'codex'] as const) {
     expect(report.roles[0]!.descriptors).not.toEqual(installed.defaults.get(report.roles[0]!.role));
     expect(roles.slice(1, 3)).toEqual(['arena runners', 'bug-fix']);
     for (const role of roles.slice(1, 3)) expect(lines.has(role)).toBe(false);
-    expect(roles.slice(3)).toEqual(['swarm workers', 'hardest tasks', 'how explainer', 'how explorer', 'interrogate reviewers', 'feature, refactoring']);
+    expect(roles.slice(3)).toEqual(['swarm workers', 'hardest tasks', 'reflect tooling, judgment, divergent, synthesizer', 'perf-issue', 'interrogate reviewers', 'feature, refactoring']);
     expect(roles.slice(3).map(role => lines.get(role))).toEqual([
       ['codex:gpt-6-luna@max'], ['claude:claude-opus-5-5@max'], ['claude:claude-sonnet-5-5@high'], ['devin:swe-2@max'],
       ['opencode:opencode/deepseek-v4.1-flash-free@max'], ['codex:gpt-6.1-sol@max'],
@@ -79,7 +79,7 @@ for (const harness of ['claude', 'codex'] as const) {
     await writeFile(join(f.dir, 'routes.json'), JSON.stringify(report));
     expect((await c!.assert(record(harness, 'pstack:poteto-mode'), f)).assertions.slice(0, 2)).toEqual(['skill-loaded', 'file:routes.json']);
 
-    for (const [role, wrong] of [['how explainer', 'claude:claude-sonnet-5-5@high'], ['hardest tasks', 'claude:opus@max'], ['how explorer', installed.defaults.get('how explorer')![0]]]) {
+    for (const [role, wrong] of [['reflect tooling, judgment, divergent, synthesizer', 'claude:claude-sonnet-5-5@high'], ['hardest tasks', 'claude:opus@max'], ['perf-issue', installed.defaults.get('perf-issue')![0]]]) {
       const changed = { roles: report.roles.map(r => r.role === role ? { ...r, descriptors: [wrong!] } : r) };
       await writeFile(join(f.dir, 'routes.json'), JSON.stringify(changed));
       await expect(c!.assert(record(harness, 'pstack:poteto-mode'), f)).rejects.toThrow('catalog-route-mismatch');
@@ -88,7 +88,7 @@ for (const harness of ['claude', 'codex'] as const) {
     await writeFile(join(f.dir, 'routes.json'), JSON.stringify({ ...report, writerSandbox: harness === 'claude' ? null : 'full-access' }));
     await expect(c!.assert(record(harness, 'pstack:poteto-mode'), f)).rejects.toThrow('catalog-route-mismatch');
 
-    const nativeDevin = { roles: report.roles.map(r => r.role === 'how explorer' ? { ...r, routes: ['native'] } : r) };
+    const nativeDevin = { roles: report.roles.map(r => r.role === 'perf-issue' ? { ...r, routes: ['native'] } : r) };
     await writeFile(join(f.dir, 'routes.json'), JSON.stringify(nativeDevin));
     await expect(c!.assert(record(harness, 'pstack:poteto-mode'), f)).rejects.toThrow('catalog-route-mismatch');
 
@@ -143,15 +143,15 @@ for (const harness of ['claude', 'codex'] as const) {
     else expect(await readFile(join(f.dir, 'AGENTS.md'), 'utf8')).toBe('mirror\n');
     const path = join(f.dir, 'pstack-models.md'), prepared = await readFile(path, 'utf8'), lines = await sheet(path);
     expect([...lines.keys()]).toEqual([...installed.defaults.keys()]);
-    expect(['swarm workers', 'hardest tasks', 'how explainer', 'judgment and prose'].map(role => lines.get(role))).toEqual([
+    expect(['swarm workers', 'hardest tasks', 'reflect tooling, judgment, divergent, synthesizer', 'judgment and prose'].map(role => lines.get(role))).toEqual([
       ['codex:gpt-6-luna@max'], ['claude:claude-opus-5-5@max'], ['claude:claude-sonnet-5-5@max'], ['claude:claude-opus-5@max'],
     ]);
     for (const [role, lanes] of installed.defaults) {
-      if (!['swarm workers', 'hardest tasks', 'how explainer', 'judgment and prose'].includes(role)) expect(lines.get(role)).toEqual(lanes);
+      if (!['swarm workers', 'hardest tasks', 'reflect tooling, judgment, divergent, synthesizer', 'judgment and prose'].includes(role)) expect(lines.get(role)).toEqual(lanes);
     }
 
     const rerun = prepared.replace('judgment and prose: claude:claude-opus-5@max', 'judgment and prose: claude:opus@max')
-      .replace('how explainer: claude:claude-sonnet-5-5@max', 'how explainer: claude:sonnet@max') + BOUNDED;
+      .replace('reflect tooling, judgment, divergent, synthesizer: claude:claude-sonnet-5-5@max', 'reflect tooling, judgment, divergent, synthesizer: claude:sonnet@max') + BOUNDED;
     await writeFile(path, rerun);
     if (harness === 'codex') await mirror(f, rerun);
     expect((await c.assert(record(harness, 'pstack:setup-pstack'), f)).assertions).toEqual([
@@ -161,7 +161,7 @@ for (const harness of ['claude', 'codex'] as const) {
     ]);
     await rejectsUnbounded(c, f, rerun);
 
-    for (const wrong of [prepared, rerun.replace('how explainer: claude:sonnet@max', 'how explainer: claude:claude-sonnet-5-5@max'), rerun.replace('claude:claude-opus-5-5@max', 'claude:opus@max'), rerun.replace(/\nbug-fix: [^\n]*/, '')]) {
+    for (const wrong of [prepared, rerun.replace('reflect tooling, judgment, divergent, synthesizer: claude:sonnet@max', 'reflect tooling, judgment, divergent, synthesizer: claude:claude-sonnet-5-5@max'), rerun.replace('claude:claude-opus-5-5@max', 'claude:opus@max'), rerun.replace(/\nbug-fix: [^\n]*/, '')]) {
       await writeFile(path, wrong);
       await expect(c.assert(record(harness, 'pstack:setup-pstack'), f)).rejects.toThrow('new-families-sheet-mismatch');
     }
@@ -189,7 +189,7 @@ for (const harness of ['claude', 'codex'] as const) {
 }
 
 for (const harness of ['claude', 'codex'] as const) {
-  test(`${harness}: the read-only-provider case requires every role line, with how explorer on Devin`, async () => {
+  test(`${harness}: the read-only-provider case requires every role line, with the reflect role on OpenCode`, async () => {
     const f = await fixture(harness), c = recipe('setup', harness).find(c => c.id === 'read-only-provider')!, installed = await readCatalog(location);
     await writeFile(join(f.dir, 'AGENTS.md'), 'mirror\n');
     await c.prepare!(f);
@@ -197,7 +197,7 @@ for (const harness of ['claude', 'codex'] as const) {
     else expect(await readFile(join(f.dir, 'AGENTS.md'), 'utf8')).toBe('mirror\n');
     const path = join(f.dir, 'pstack-models.md'), prepared = await readFile(path, 'utf8'), lines = await sheet(path);
     expect([...lines.keys()]).toEqual([...installed.defaults.keys()]);
-    for (const [role, lanes] of installed.defaults) expect(lines.get(role)).toEqual(role === 'how explorer' ? ['opencode:opencode/deepseek-v4.1-flash-free@max'] : lanes);
+    for (const [role, lanes] of installed.defaults) expect(lines.get(role)).toEqual(role === 'reflect tooling, judgment, divergent, synthesizer' ? ['opencode:opencode/deepseek-v4.1-flash-free@max'] : lanes);
 
     await writeFile(path, prepared + BOUNDED);
     if (harness === 'codex') await mirror(f, prepared + BOUNDED);
@@ -208,7 +208,7 @@ for (const harness of ['claude', 'codex'] as const) {
     ]);
     await rejectsUnbounded(c, f, prepared + BOUNDED);
 
-    for (const wrong of [prepared.replace('how explorer: opencode:opencode/deepseek-v4.1-flash-free@max', `how explorer: ${installed.defaults.get('how explorer')!.join(', ')}`), prepared.replace(/\nbug-fix: [^\n]*/, '')]) {
+    for (const wrong of [prepared.replace('reflect tooling, judgment, divergent, synthesizer: opencode:opencode/deepseek-v4.1-flash-free@max', `reflect tooling, judgment, divergent, synthesizer: ${installed.defaults.get('reflect tooling, judgment, divergent, synthesizer')!.join(', ')}`), prepared.replace(/\nbug-fix: [^\n]*/, '')]) {
       await writeFile(path, wrong);
       await expect(c.assert(probed, f)).rejects.toThrow('read-only-provider-sheet-mismatch');
     }

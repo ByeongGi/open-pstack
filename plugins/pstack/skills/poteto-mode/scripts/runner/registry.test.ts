@@ -81,9 +81,12 @@ describe("registry data", () => {
     for (const role of ["arena runners", "arena cross-judge pool", "architect runners", "interrogate reviewers"]) {
       expect([role, lanes(role)]).toEqual([role, ["opus", "sol", "grok"]]);
     }
-    for (const role of ["why investigators, synthesizer", "reflect tooling, judgment, divergent, synthesizer"]) {
-      expect([role, lanes(role)]).toEqual([role, ["inherit-parent"]]);
-    }
+    expect(["reflect tooling, judgment, divergent, synthesizer", lanes("reflect tooling, judgment, divergent, synthesizer")]).toEqual([
+      "reflect tooling, judgment, divergent, synthesizer",
+      ["inherit-parent"],
+    ]);
+    expect(lanes("how explorer")).toBeUndefined();
+    expect(lanes("why investigators, synthesizer")).toBeUndefined();
   });
 
   it("keeps the default efforts, the Claude rolling aliases, and ultra on Sol and Astra", () => {
@@ -361,7 +364,6 @@ const ROLE_DEFAULTS = "model-catalog.md#role-defaults";
 const ROLE_POINTERS: Record<string, readonly string[]> = {
   "skills/arena/SKILL.md": ["arena runners", "arena cross-judge pool"],
   "skills/architect/SKILL.md": ["architect runners"],
-  "skills/how/SKILL.md": ["how explorer", "how explainer"],
   "skills/interrogate/SKILL.md": ["interrogate reviewers"],
   "skills/swarm/SKILL.md": ["swarm workers"],
   "skills/poteto-mode/SKILL.md": ["feature, refactoring", "bug-fix", "perf-issue", "hillclimb", "hardest tasks", "judgment and prose"],

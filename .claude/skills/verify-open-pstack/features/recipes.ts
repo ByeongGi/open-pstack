@@ -561,7 +561,7 @@ function keptPredecessor(): Case {
 const NEW_FAMILY_LANES: Record<string, [string, string]> = {
   'swarm workers': ['codex:gpt-6-luna@max', 'codex:gpt-6-luna@max'],
   'hardest tasks': ['claude:claude-opus-5-5@max', 'claude:claude-opus-5-5@max'],
-  'how explainer': ['claude:claude-sonnet-5-5@max', 'claude:sonnet@max'],
+  'reflect tooling, judgment, divergent, synthesizer': ['claude:claude-sonnet-5-5@max', 'claude:sonnet@max'],
   'judgment and prose': ['claude:claude-opus-5@max', 'claude:opus@max'],
 };
 function newFamilies(): Case {
@@ -592,7 +592,7 @@ function newFamilies(): Case {
   };
 }
 
-const READ_ONLY_ROLE = 'how explorer', READ_ONLY_LANE = 'opencode:opencode/deepseek-v4.1-flash-free@max';
+const READ_ONLY_ROLE = 'reflect tooling, judgment, divergent, synthesizer', READ_ONLY_LANE = 'opencode:opencode/deepseek-v4.1-flash-free@max';
 function readOnlyProvider(): Case {
   let expected: string[] = [];
   return {
@@ -675,8 +675,8 @@ const CONFIGURED_ROLE = 'judgment and prose', MISSING_ROLES = ['arena runners', 
 const CATALOG_LANES: Record<string, [string, string]> = {
   'swarm workers': ['codex:gpt-6-luna@max', 'codex:gpt-6-luna@max'],
   'hardest tasks': ['claude:claude-opus-5-5@max', 'claude:claude-opus-5-5@max'],
-  'how explainer': ['claude:claude-sonnet-5-5@high', 'claude:sonnet@high'],
-  'how explorer': ['devin:swe-2@max', 'devin:swe-2@max'],
+  'reflect tooling, judgment, divergent, synthesizer': ['claude:claude-sonnet-5-5@high', 'claude:sonnet@high'],
+  'perf-issue': ['devin:swe-2@max', 'devin:swe-2@max'],
   'interrogate reviewers': ['opencode:opencode/deepseek-v4.1-flash-free@max', 'opencode:opencode/deepseek-v4.1-flash-free@max'],
   [WRITER_ROLE]: [WRITER_LANE, WRITER_LANE],
 };
@@ -802,9 +802,9 @@ const t3Dispatch: Case = {
 };
 
 const GROK_LANES = [
-  { role: 'why investigators, synthesizer', descriptor: 'inherit-parent' },
-  { role: 'how explorer', descriptor: 'grok:grok-4.7@low', provider: 'grok', model: 'grok-4.7', effort: 'low', proof: 'provider-report' },
-  { role: 'how explainer', descriptor: 'codex:gpt-6-luna@low', provider: 'codex', model: 'gpt-6-luna', effort: 'low', proof: 'pinned-argv' },
+  { role: 'reflect tooling, judgment, divergent, synthesizer', descriptor: 'inherit-parent' },
+  { role: 'judgment and prose', descriptor: 'grok:grok-4.7@low', provider: 'grok', model: 'grok-4.7', effort: 'low', proof: 'provider-report' },
+  { role: 'hillclimb', descriptor: 'codex:gpt-6-luna@low', provider: 'codex', model: 'gpt-6-luna', effort: 'low', proof: 'pinned-argv' },
 ] as const;
 const GROK_AGENTS = ['pstack:poteto-agent', 'pstack:comment-sicko'];
 
